@@ -149,38 +149,41 @@ class _MyHomePageState extends State<MyHomePage> {
             child: RaisedButton(
               child: Text('WRITE', style: TextStyle(color: Colors.white)),
               onPressed: () async {
-                await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Write"),
-                        content: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: TextField(
-                                controller: _writeController,
-                              ),
-                            ),
-                          ],
-                        ),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text("Send"),
-                            onPressed: () {
-                              characteristic.write(
-                                  utf8.encode(_writeController.value.text));
-                              Navigator.pop(context);
-                            },
-                          ),
-                          FlatButton(
-                            child: Text("Cancel"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      );
-                    });
+                characteristic
+                    .write([17, 1, 1]).then((value) => print('VALUE:$value'));
+                // await showDialog(
+                //     context: context,
+                //     builder: (BuildContext context) {
+                //       return AlertDialog(
+                //         title: Text("Write"),
+                //         content: Row(
+                //           children: <Widget>[
+                //             Expanded(
+                //               child: TextField(
+                //                 controller: _writeController,
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //         actions: <Widget>[
+                //           FlatButton(
+                //             child: Text("Send"),
+                //             onPressed: () {
+                //               characteristic.write([21, 1]).then(
+                //                   (value) => print('VALUE:$value'));
+                //               // characteristic.write(
+                //               //     utf8.encode(_writeController.value.text));
+                //               Navigator.pop(context);
+                //             },
+                //           ),
+                //           FlatButton(
+                //             child: Text("Cancel"),
+                //             onPressed: () {
+                //               Navigator.pop(context);
+                //             },
+                //           ),
+                //         ],
+                //       );
               },
             ),
           ),
@@ -199,6 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 characteristic.value.listen((value) {
                   widget.readValues[characteristic.uuid] = value;
+                  print(value);
                 });
                 await characteristic.setNotifyValue(true);
               },
